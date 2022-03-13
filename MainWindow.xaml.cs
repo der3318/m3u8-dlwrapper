@@ -23,6 +23,17 @@ namespace m3u8_dlwrapper
         public MainWindow()
         {
             InitializeComponent();
+            Link.Text = "http://example.com/source.m3u8";
+            Dest.Text = @"C:\download.mp4";
+            SpeedUp.IsChecked = true;
+            DownloadBtn.IsEnabled = true;
+            Status.Text = "Entper the clip info.\nPress \"download\" to start.\n";
+        }
+
+        public void Download(object sender, RoutedEventArgs e)
+        {
+            DownloadBtn.IsEnabled = false;
+            Status.Text += "Start downloading...\n";
         }
     }
 }
