@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace m3u8_dlwrapper
 {
@@ -24,6 +14,7 @@ namespace m3u8_dlwrapper
         {
             InitializeComponent();
             Link.Text = "http://example.com/source.m3u8";
+            UserAgent.Text = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0";
             Dest.Text = @"C:\download.mp4";
             SpeedUp.IsChecked = true;
             DownloadBtn.IsEnabled = true;
@@ -33,7 +24,40 @@ namespace m3u8_dlwrapper
         public void Download(object sender, RoutedEventArgs e)
         {
             DownloadBtn.IsEnabled = false;
-            Status.Text += "Start downloading...\n";
+            Status.Text = String.Empty;
+            new Thread(FFmpegBackgroundTask).Start();
+        }
+
+        private void FFmpegBackgroundTask()
+        {
+            Process proc = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "ffmpeg.exe",
+                    Arguments = "-h",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                }
+            };
+            proc.Start();
+
+            while (!proc.StandardOutput.EndOfStream)
+            {
+                string line = proc.StandardOutput.ReadLine();
+                this.Dispatcher.Invoke(() =>
+                {
+                    Status.Text += (line + "\n");
+                    Status.ScrollToEnd();
+                });
+            }
+
+            this.Dispatcher.Invoke(() =>
+            {
+                DownloadBtn.IsEnabled = true;
+            });
         }
     }
 }
