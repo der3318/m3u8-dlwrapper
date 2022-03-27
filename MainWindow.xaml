@@ -17,6 +17,8 @@
             <RowDefinition Height=".1*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height=".1*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height=".1*"/>
             <RowDefinition Height="4*"/>
             <RowDefinition Height=".1*"/>
         </Grid.RowDefinitions>
@@ -46,26 +48,34 @@
         <TextBlock
             Grid.Row="5"
             Grid.Column="1"
+            Text="header cookie "/>
+        <TextBox
+            x:Name="HeaderCookie"
+            Grid.Row="5"
+            Grid.Column="3"/>
+        <TextBlock
+            Grid.Row="7"
+            Grid.Column="1"
             Text="save as (.mp4) "/>
         <TextBox
             x:Name="Dest"
-            Grid.Row="5"
+            Grid.Row="7"
             Grid.Column="3"/>
         <CheckBox
             x:Name="SpeedUp"
-            Grid.Row="7"
+            Grid.Row="9"
             Grid.Column="1"
             IsChecked="True">2x speed</CheckBox>
         <Button
             x:Name="DownloadBtn"
-            Grid.Row="7"
+            Grid.Row="9"
             Grid.Column="3"
             Content="download"
             IsEnabled="True"
             Click="Download"/>
         <TextBox
             x:Name="Status"
-            Grid.Row="9"
+            Grid.Row="11"
             Grid.Column="1"
             Grid.ColumnSpan="3"
             IsReadOnly="True"

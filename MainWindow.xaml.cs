@@ -13,12 +13,13 @@ namespace m3u8_dlwrapper
         public MainWindow()
         {
             InitializeComponent();
-            Link.Text = "http://example.com/source.m3u8";
-            UserAgent.Text = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0";
-            Dest.Text = @"C:\download.mp4";
+            Link.Text = "https://sample.com/playlist.m3u8";
+            UserAgent.Text = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.46 Safari/537.36 Edg/100.0.1185.17";
+            HeaderCookie.Text = "Cookie: logged_in=yes; tracker=direct`r`n";
+            Dest.Text = @"C:\Users\Public\download.mp4";
             SpeedUp.IsChecked = true;
             DownloadBtn.IsEnabled = true;
-            Status.Text = "Entper the clip info.\nPress \"download\" to start.\n";
+            Status.Text = "Enter the clip info.\nPress \"download\" to start.\n";
         }
 
         public void Download(object sender, RoutedEventArgs e)
@@ -30,29 +31,54 @@ namespace m3u8_dlwrapper
 
         private void FFmpegBackgroundTask()
         {
+            String copyOption = String.Empty;
+            String arguments = "-h";
+            this.Dispatcher.Invoke(() =>
+            {
+                copyOption = SpeedUp.IsChecked.HasValue && SpeedUp.IsChecked.Value ? "-filter_complex \"[0:v]setpts=PTS/2[v];[0:a]atempo=2[a]\" -map \"[v]\" -map \"[a]\"" : "-c copy";
+                arguments = String.Format("-user_agent \"{0}\" -headers \"{1}\" -i {2} {3} -bsf:a aac_adtstoasc {4}", UserAgent.Text, HeaderCookie.Text, Link.Text, copyOption, Dest.Text);
+            });
+
             Process proc = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "ffmpeg.exe",
-                    Arguments = "-h",
+                    Arguments = arguments,
                     UseShellExecute = false,
+                    RedirectStandardInput = true,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     CreateNoWindow = true
                 }
             };
-            proc.Start();
 
-            while (!proc.StandardOutput.EndOfStream)
+            const int MaxLoggedLineCnt = 100;
+            DataReceivedEventHandler redirectionHandler = new DataReceivedEventHandler((sender, e) =>
             {
-                string line = proc.StandardOutput.ReadLine();
-                this.Dispatcher.Invoke(() =>
+                if (!String.IsNullOrEmpty(e.Data))
                 {
-                    Status.Text += (line + "\n");
-                    Status.ScrollToEnd();
-                });
-            }
+                    string line = e.Data;
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        Status.Text += (line + "\n");
+                        Status.ScrollToEnd();
+                        while (Status.LineCount > MaxLoggedLineCnt)
+                        {
+                            Status.Text = Status.Text.Substring(Status.Text.IndexOf("\n", StringComparison.OrdinalIgnoreCase) + 1);
+                        }
+                    });
+                }
+            });
+
+            proc.OutputDataReceived += redirectionHandler;
+            proc.ErrorDataReceived += redirectionHandler;
+            proc.Start();
+            proc.StandardInput.Write("y\ny\ny\ny\ny\ny\ny\ny\ny\ny\n");
+            proc.BeginOutputReadLine();
+            proc.BeginErrorReadLine();
+            proc.WaitForExit();
+            proc.Close();
 
             this.Dispatcher.Invoke(() =>
             {
