@@ -15,7 +15,8 @@ namespace m3u8_dlwrapper
             InitializeComponent();
             Link.Text = "https://sample.com/playlist.m3u8";
             UserAgent.Text = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.46 Safari/537.36 Edg/100.0.1185.17";
-            HeaderCookie.Text = "Cookie: logged_in=yes; tracker=direct`r`n";
+            HeaderCookie.Text = "logged_in=yes; tracker=direct";
+            InputSeeking.Text = "00:00:00";
             Dest.Text = @"C:\Users\Public\download.mp4";
             SpeedUp.IsChecked = true;
             DownloadBtn.IsEnabled = true;
@@ -36,7 +37,7 @@ namespace m3u8_dlwrapper
             this.Dispatcher.Invoke(() =>
             {
                 copyOption = SpeedUp.IsChecked.HasValue && SpeedUp.IsChecked.Value ? "-filter_complex \"[0:v]setpts=PTS/2[v];[0:a]atempo=2[a]\" -map \"[v]\" -map \"[a]\"" : "-c copy";
-                arguments = String.Format("-user_agent \"{0}\" -headers \"{1}\" -i {2} {3} -bsf:a aac_adtstoasc {4}", UserAgent.Text, HeaderCookie.Text, Link.Text, copyOption, Dest.Text);
+                arguments = String.Format("-user_agent \"{0}\" -headers \"Cookie: {1}\r\n\" -ss {2} -i {3} {4} -bsf:a aac_adtstoasc {5}", UserAgent.Text, HeaderCookie.Text, InputSeeking.Text, Link.Text, copyOption, Dest.Text);
             });
 
             Process proc = new Process
