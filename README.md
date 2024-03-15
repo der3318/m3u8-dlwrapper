@@ -1,7 +1,7 @@
 
 ## 📹 HLS Download Wrapper
 
-![version](https://img.shields.io/badge/version-1.0.0.0-blue.svg)
+![version](https://img.shields.io/badge/version-1.1.0.0-blue.svg)
 ![dotnetframework](https://img.shields.io/badge/.net%20framework-4.7.2-green.svg)
 [![ffmpeg](https://img.shields.io/badge/ffmpeg-4.4-brightgreen.svg)](https://github.com/FFmpeg/FFmpeg/commit/f68ab9de4e)
 [![icon](https://img.shields.io/badge/icon-iconfinder-pink.svg)](https://www.iconfinder.com)
@@ -15,7 +15,7 @@ WPF interface bridging the m3u8 stream download utility of [FFmpeg](https://gith
 
 ### 💡 How This Works
 
-Visit [m3u8-dlwrapper.zip](https://github.com/der3318/m3u8-dlwrapper/releases/download/v1.0.0.0/m3u8-dlwrapper.zip) for the built binaries, or build the WPF project using Visual Studio on your own. Unzip and run `m3u8-dlwrapper.exe` on a Windows x64 machine. Enter the clip info to start downloading a .m3u8 stream.
+Visit [m3u8-dlwrapper.zip](https://github.com/der3318/m3u8-dlwrapper/releases/download/v1.1.0.0/m3u8-dlwrapper.zip) for the built binaries, or build the WPF project using Visual Studio on your own. Unzip and run `m3u8-dlwrapper.exe` on a Windows x64 machine. Enter the clip info to start downloading a .m3u8 stream.
 
 These are what the tool actually does in the backend:
 
